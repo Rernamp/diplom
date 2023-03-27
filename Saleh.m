@@ -92,7 +92,7 @@ function [ spec ] = spec_dB( sig_out , fs, titleName)
 
     x_fft = fft(sig_out);
     
-    ahc_x = mag2db(abs(x_fft));
+    ahc_x = fftshift(mag2db(abs(x_fft)));
     
     f = (0:length(sig_out)-1)*fs/length(sig_out);
     
