@@ -1,7 +1,7 @@
 close all
 clear;
 
-subsystemType = '32APSK 3/4';
+subsystemType = '16APSK 2/3';
 fs = 1;
 
 EsNo = 20;
