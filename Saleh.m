@@ -1,4 +1,7 @@
 subsystemType = '32APSK 3/4';
+
+addpath("Dependencies");
+
 fs = 1;
 
 EsNo = 20;
@@ -71,6 +74,8 @@ FIR_h = fir_rcos(sps, 3, rolloff); % формирующий фильтр инт�
 
 sig_in  = sps * conv(sig_in, FIR_h, 'same');
 
+my_oscillogram(sig_in, 1);
+
 
 G = a_A.*abs(xComplex)./(1+b_A.*(abs(xComplex).^2));
 F = a_F*(abs(xComplex).^2)./(1+b_F*(abs(xComplex).^2));
@@ -78,10 +83,33 @@ sig_out1 = G .* exp(1i * 2 * pi .* F);
 sig_out = sig_in .* (sig_out ./ abs(sig_in));
 %%sig_out_Sale = G.*exp(1i * 2 * pi .* (F + angle(xComplex)));
 
+my_oscillogram(sig_out, 1);
+
 peakFactor(xComplex)
 spec_dB(sig_in, 1, "Input") 
 spec_dB(sig_out, 1, "Output Saleh 32APSK")
 %%spec_dB(sig_out_Sale, 1, "From Saleh sci-hub")
+
+load('h_FIR_Rx.mat');
+
+mas_Rx_IQ = conv(sig_out, h_FIR_Rx, 'same');
+mas_Rx_clx_symbols = mas_Rx_IQ(1 : sps : end);
+
+mas_Rx_int_symbols = zeros(N_symbols, 1);
+for i = 1 : 1 : N_symbols
+  Rx_clx_symbol = mas_Rx_clx_symbols(i);
+  
+  [vmin imin] = min(abs(constel_mas - Rx_clx_symbol));
+  
+  mas_Rx_int_symbols(i) = imin-1;
+end % for i
+
+matr_Rx_message = de2bi(mas_Rx_int_symbols, bps);
+mas_Rx_message = matr_Rx_message(:);
+
+my_oscillogram(mas_Rx_message, 1);
+
+
 
 function [peakFactor] = peakFactor( xComplex)
 %     peakFactor = db((max(signal.^2)) ./ (mean(signal.^2)));
