@@ -72,7 +72,8 @@ scatterplot(sig_in)
 rolloff = 0.5;
 FIR_h = fir_rcos(sps, 3, rolloff); % формирующий фильтр интерполятора
 
-sig_in  = sps * conv(sig_in, FIR_h, 'same');
+mas_Tx_IQ_upsampled = upsample(sig_in, sps);
+sig_in  = sps * conv(mas_Tx_IQ_upsampled, FIR_h, 'same');
 
 my_oscillogram(sig_in, 1);
 
@@ -99,7 +100,7 @@ mas_Rx_int_symbols = zeros(N_symbols, 1);
 for i = 1 : 1 : N_symbols
   Rx_clx_symbol = mas_Rx_clx_symbols(i);
   
-  [vmin imin] = min(abs(constel_mas - Rx_clx_symbol));
+  [vmin imin] = min(abs(const - Rx_clx_symbol));
   
   mas_Rx_int_symbols(i) = imin-1;
 end % for i
