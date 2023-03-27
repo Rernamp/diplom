@@ -78,9 +78,9 @@ sig_in  = sps * conv(mas_Tx_IQ_upsampled, FIR_h, 'same');
 my_oscillogram(sig_in, 1);
 
 
-G = a_A.*abs(xComplex)./(1+b_A.*(abs(xComplex).^2));
-F = a_F*(abs(xComplex).^2)./(1+b_F*(abs(xComplex).^2));
-sig_out1 = G .* exp(1i * 2 * pi .* F);
+G = a_A.*abs(sig_in)./(1+b_A.*(abs(sig_in).^2));
+F = a_F*(abs(sig_in).^2)./(1+b_F*(abs(sig_in).^2));
+sig_out = G .* exp(1i * 2 * pi .* F);
 sig_out = sig_in .* (sig_out ./ abs(sig_in));
 %%sig_out_Sale = G.*exp(1i * 2 * pi .* (F + angle(xComplex)));
 
