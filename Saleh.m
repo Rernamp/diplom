@@ -1,3 +1,5 @@
+close all;
+clear; 
 subsystemType = '32APSK 3/4';
 
 addpath("Dependencies");
@@ -75,7 +77,6 @@ FIR_h = fir_rcos(sps, 3, rolloff); % формирующий фильтр инт�
 mas_Tx_IQ_upsampled = upsample(sig_in, sps);
 sig_in  = sps * conv(mas_Tx_IQ_upsampled, FIR_h, 'same');
 
-my_oscillogram(sig_in, 1);
 
 
 G = a_A.*abs(sig_in)./(1+b_A.*(abs(sig_in).^2));
@@ -84,7 +85,7 @@ sig_out = G .* exp(1i * 2 * pi .* F);
 sig_out = sig_in .* (sig_out ./ abs(sig_in));
 %%sig_out_Sale = G.*exp(1i * 2 * pi .* (F + angle(xComplex)));
 
-my_oscillogram(sig_out, 1);
+
 
 peakFactor(xComplex)
 spec_dB(sig_in, 1, "Input") 
@@ -96,7 +97,7 @@ load('h_FIR_Rx.mat');
 mas_Rx_IQ = conv(sig_out, h_FIR_Rx, 'same');
 mas_Rx_clx_symbols = mas_Rx_IQ(1 : sps : end);
 
-my_oscillogram(mas_Rx_clx_symbols, 1)
+
 scatterplot(mas_Rx_clx_symbols)
 mas_Rx_int_symbols = zeros(N_symbols, 1);
 for i = 1 : 1 : N_symbols
@@ -110,7 +111,7 @@ end % for i
 matr_Rx_message = de2bi(mas_Rx_int_symbols, bps);
 mas_Rx_message = matr_Rx_message(:);
 
-my_oscillogram(mas_Rx_message, 1);
+
 
 
 
