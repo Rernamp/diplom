@@ -99,7 +99,7 @@ mas_Rx_int_symbols = zeros(N_symbols, 1);
 for i = 1 : 1 : N_symbols
   Rx_clx_symbol = mas_Rx_clx_symbols(i);
   
-  [vmin imin] = min(abs(constel_mas - Rx_clx_symbol));
+  [vmin imin] = min(abs(const - Rx_clx_symbol));
   
   mas_Rx_int_symbols(i) = imin-1;
 end % for i
