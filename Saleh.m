@@ -96,6 +96,8 @@ load('h_FIR_Rx.mat');
 mas_Rx_IQ = conv(sig_out, h_FIR_Rx, 'same');
 mas_Rx_clx_symbols = mas_Rx_IQ(1 : sps : end);
 
+my_oscillogram(mas_Rx_clx_symbols, 1)
+
 mas_Rx_int_symbols = zeros(N_symbols, 1);
 for i = 1 : 1 : N_symbols
   Rx_clx_symbol = mas_Rx_clx_symbols(i);
