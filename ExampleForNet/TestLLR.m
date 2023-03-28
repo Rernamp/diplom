@@ -1,6 +1,6 @@
 
 subsystemType = '16APSK 2/3'; %#ok<UNRCH>
-EsNoValues = 8.6;     % in dB
+EsNoValues = 8.6:0.1:8.9;     % in dB
 numFrames = 1000;
 numErrors = 200;
 
@@ -17,7 +17,7 @@ end
 estimateConfig = LLREstimateConfig(false, @(input) (amplifaer(input)));
 
 % Simulate PER with exact LLR, approximate LLR, and LLRNet
-[perLLR,perApproxLLR,perLLRNet] = llrnetDVBS2PER(subsystemType,EsNoValues,llrNets,numFrames,numErrors, estimateConfig);
+[perLLR,perApproxLLR,perLLRNet] = customLlrnetDVBS2PER(subsystemType,EsNoValues,llrNets,numFrames,numErrors, estimateConfig);
 llrnetPlotLLRvsEsNo(perLLR,perApproxLLR,perLLRNet,EsNoValues,subsystemType)
 
 

@@ -1,5 +1,5 @@
 function [perLLR,perApproxLLR,perLLRNet] = ...
-  llrnetDVBS2PER(subsystemType, EsNoValues, llrNets, numFrames, numErrors, estimateConfig)
+  customLlrnetDVBS2PER(subsystemType, EsNoValues, llrNets, numFrames, numErrors, estimateConfig)
 %llrnetDVBS2PER DVB-S.2 packet error rate
 %   [PERLLR,PERAPRLLR,PERLLRNET] = llrnetDVBS2PER(SUB,EsNo,LLRNET,NF,NERR)
 %   simulates the packet error rate (PER) of a DVB-S.2 system with
