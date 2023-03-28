@@ -97,8 +97,8 @@ load('h_FIR_Rx.mat');
 mas_Rx_IQ = conv(sig_out, h_FIR_Rx, 'same');
 mas_Rx_clx_symbols = mas_Rx_IQ(1 : sps : end);
 
-
 scatterplot(mas_Rx_clx_symbols)
+scatterplot(xComplex)
 mas_Rx_int_symbols = zeros(N_symbols, 1);
 for i = 1 : 1 : N_symbols
   Rx_clx_symbol = mas_Rx_clx_symbols(i);
@@ -110,6 +110,7 @@ end % for i
 
 matr_Rx_message = de2bi(mas_Rx_int_symbols, bps);
 mas_Rx_message = matr_Rx_message(:);
+BER = count_ber(mas_Rx_message, mas_Tx_message) + 1e-10;
 
 
 
