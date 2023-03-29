@@ -29,7 +29,7 @@ function [perLLR,perApproxLLR,perLLRNet] = ...
 %
 %   See also LLRNeuralNetworkExample.
 
-%   Copyright 2019-2022 The MathWorks, Inc.
+%   Copyright 2019 The MathWorks, Inc.
 
 narginchk(6,6)
 
@@ -53,16 +53,20 @@ validateattributes(EsNoValues,...
   {'row','finite','nonnan'},...
   mfilename,'EsNo')
 
+if (estimateConfig.UseNet())
 if ~isequal(size(llrNets), size(EsNoValues))
   error('commdemos:llrnet:EsNoLLRNetSizeMismatch', ...
     'EsNo and LLRNET must be same size')
 end
+end
 
+if (estimateConfig.UseNet())
 for p=1:length(llrNets)
   assert(isa(llrNets{p},'network'),...
     'commdemos:llrnet:NetworkTypeMismatch', ...
     ['LLRNET must be a cell array of valid networks with the '...
     'same size as EsNo'])
+end
 end
 
 numEsNoPoints = length(EsNoValues);
@@ -87,9 +91,13 @@ for worker = 1:numWorkers
     EsNo = EsNoValues(esnoIdx); %#ok<PFBNS>
     dvb = getParamsDVBS2Demo(subsystemType, EsNo, maxNumLDPCIterations);
     
-    % LDPC Encoder and Decoder Configuration
-    ldpcenccfg = ldpcEncoderConfig(dvb.LDPCParityCheckMatrix);
-    ldpcdeccfg = ldpcDecoderConfig(dvb.LDPCParityCheckMatrix);
+    % LDPC Encoder and Decoder
+    encldpc = comm.LDPCEncoder(dvb.LDPCParityCheckMatrix);
+    
+    decldpc = comm.LDPCDecoder(dvb.LDPCParityCheckMatrix, ...
+      'IterationTerminationCondition', 'Parity check satisfied', ...
+      'MaximumIterationCount',         dvb.LDPCNumIterations, ...
+      'NumIterationsOutputPort',       true);
     
     % BCH Encoder and Decoder
     encbch = comm.BCHEncoder('CodewordLength', dvb.BCHCodewordLength, ...
@@ -156,7 +164,7 @@ end
       
       % Encoding
       bchEncOut = encbch(bbFrameTx);
-      ldpcEncOut = ldpcEncode(bchEncOut,ldpcenccfg);
+      ldpcEncOut = encldpc(bchEncOut);
       
       %Block Interleaver
       intrlvrOut = intrlv(ldpcEncOut, dvb.InterleaveOrder);
@@ -168,13 +176,8 @@ end
         modOut = dvbsapskmod(intrlvrOut, dvb.ModulationOrder, 's2', ...
           dvb.CodeRate, 'InputType', 'bit', 'UnitAveragePower', true);
       end
-        
-      %amplifaer 
-        
-      modOut = estimateConfig.amplifaerSignal(modOut);
-
+      
       % Channel
-
       chanOut = chan(modOut);
       
       if (estimateConfig.UseNet())
@@ -196,20 +199,20 @@ end
       end
       
       % Deinterleave, decode, and check packet errors for exact LLR
-      packetErr = packetError(demodOutLLR, bbFrameTx, dvb, ldpcdeccfg, decbch);
+      packetErr = packetError(demodOutLLR, bbFrameTx, dvb, decldpc, decbch);
       perEsNoLLR = PERLLR(falseVec,   packetErr');
       numPacketsLLR(esnoIdx,worker) = perEsNoLLR(3);
       numErrorsLLR(esnoIdx,worker) = perEsNoLLR(2);
       
       % Deinterleave, decode, and check packet errors for approximate LLR
-      packetErr = packetError(demodOutApproxLLR, bbFrameTx, dvb, ldpcdeccfg, decbch);
+      packetErr = packetError(demodOutApproxLLR, bbFrameTx, dvb, decldpc, decbch);
       perEsNoApproxLLR = PERApproxLLR(falseVec,   packetErr');
       numPacketsApproxLLR(esnoIdx,worker) = perEsNoApproxLLR(3);
       numErrorsApproxLLR(esnoIdx,worker) = perEsNoApproxLLR(2);
       
       if (estimateConfig.UseNet())
       % Deinterleave, decode, and check packet errors for LLRNet
-      packetErr = packetError(demodOutLLRNet, bbFrameTx, dvb, ldpcdeccfg, decbch);
+      packetErr = packetError(demodOutLLRNet, bbFrameTx, dvb, decldpc, decbch);
       perEsNoLLRNet = PERLLRNet(falseVec,   packetErr');
       numPacketsLLRNet(esnoIdx,worker) = perEsNoLLRNet(3);
       numErrorsLLRNet(esnoIdx,worker) = perEsNoLLRNet(2);
@@ -235,7 +238,7 @@ perLLR(:,3) = sum(numPacketsLLR, 2);
 perApproxLLR(:,1) = sum(numErrorsApproxLLR, 2) ./ sum(numPacketsApproxLLR, 2);
 perApproxLLR(:,2) = sum(numErrorsApproxLLR, 2);
 perApproxLLR(:,3) = sum(numPacketsApproxLLR, 2);
-
+perLLRNet = 0;
 if (estimateConfig.UseNet())
 perLLRNet(:,1) = sum(numErrorsLLRNet, 2) ./ sum(numPacketsLLRNet, 2);
 perLLRNet(:,2) = sum(numErrorsLLRNet, 2);
@@ -243,14 +246,14 @@ perLLRNet(:,3) = sum(numPacketsLLRNet, 2);
 end
 end
 
-function packetErr = packetError(demodOut, bbFrameTx, dvb, ldpcdeccfg, decbch)
+function packetErr = packetError(demodOut, bbFrameTx, dvb, decldpc, decbch)
 %packetError Deinterleave, decode, and check packet errors
 %   PE = packetError(Y,X,DVB,LDPCDEC,BCHDEC) deinterleaves, LDPC decodes,
 %   BCH decodes received LLR values, Y, and compares to the transmitted
 %   bits, X, and returns the packet error vector, PE.
 
 deintrlvrOut = deintrlv(demodOut, dvb.InterleaveOrder);
-ldpcDecOut = ldpcDecode(deintrlvrOut,ldpcdeccfg,dvb.LDPCNumIterations); % Default: Termination=early
+ldpcDecOut = decldpc(deintrlvrOut);
 bchDecOut = decbch(ldpcDecOut);
 bbFrameRx = bchDecOut(1:dvb.NumInfoBitsPerCodeword,1);
 
