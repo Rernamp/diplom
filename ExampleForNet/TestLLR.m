@@ -1,5 +1,5 @@
 
-numFrames = 1;
+numFrames = 1000;
 numErrors = 200;
 
 trainNow = false;

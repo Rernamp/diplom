@@ -3,7 +3,7 @@ clear;
 subsystemType = '32APSK 3/4';
 
 addpath("Dependencies");
-
+addpath("ExampleForNet")
 fs = 1;
 
 EsNo = 20;
