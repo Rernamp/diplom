@@ -85,8 +85,8 @@ sig_in  = sps * conv(mas_Tx_IQ_upsampled, FIR_h, 'same');
 
 
 
-G_Gh = (x_1.*abs(xComplex).^x_2)./(1+x_3.*abs(xComplex).^x_5)+x_4.*abs(xComplex);
-F_Gh = (y_1.*abs(xComplex).^y_2)./(1+y_3.*abs(xComplex).^y_5)+y_4.*abs(xComplex).^y_2;
+G_Gh = (x_1.*abs(sig_in).^x_2)./(1+x_3.*abs(sig_in).^x_5)+x_4.*abs(sig_in);
+F_Gh = (y_1.*abs(sig_in).^y_2)./(1+y_3.*abs(sig_in).^y_5)+y_4.*abs(sig_in).^y_2;
 sig_out = G_Gh .* exp(1i * 2 * pi .* F_Gh);
 sig_out = sig_in .* (sig_out ./ abs(sig_in));
 %%sig_out_Sale = G.*exp(1i * 2 * pi .* (F + angle(xComplex)));
