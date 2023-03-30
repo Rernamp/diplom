@@ -17,7 +17,6 @@ EsNoValues = 8.6:0.1:8.9;     % in dB
 
 estimateConfig = LLREstimateConfig(false, @(input) (amplifaerSaleh(input)));
 
-
 % Simulate PER with exact LLR, approximate LLR, and LLRNet
 [perLLRSalef,perApproxLLRSalef,perLLRNetSalef] = customLlrnetDVBS2PER(subsystemType,EsNoValues,llrNets,numFrames,numErrors, estimateConfig);
 type = subsystemType + " + Saleh";
@@ -33,11 +32,15 @@ llrnetPlotLLRvsEsNo(perLLRGhorbani,perApproxLLRGhorbani,perLLRNetGhorbani,EsNoVa
 estimateConfig = LLREstimateConfig(false, @(input) (amplifaerDummy(input)));
 
 [perLLRDummy,perApproxLLRDummy,perLLRNetDummy] = customLlrnetDVBS2PER(subsystemType,EsNoValues,llrNets,numFrames,numErrors, estimateConfig);
-type = subsystemType + " + Saleh";
+type = subsystemType;
 llrnetPlotLLRvsEsNo(perLLRDummy,perApproxLLRDummy,perLLRNetDummy,EsNoValues,type)
 
 save("result.mat","perLLRNetDummy","perLLRDummy","perApproxLLRDummy","perLLRNetGhorbani","perApproxLLRGhorbani","perLLRGhorbani","perLLRNetSalef","perApproxLLRSalef","perLLRSalef");
 
+figure ()
+hold on
+plot(EsNoValues, perLLRDummy)
+plot(EsNoValues, perLLRSalef)
 
 function output = amplifaerGhorbani(input)
 
