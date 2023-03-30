@@ -1,5 +1,5 @@
-
-numFrames = 1;
+close all;
+numFrames = 100;
 numErrors = 200;
 
 trainNow = false;
@@ -13,7 +13,7 @@ else
 end
 
 subsystemType = '16APSK 2/3'; %#ok<UNRCH>
-EsNoValues = 8.6:0.1:8.9;     % in dB
+EsNoValues = 8.5:0.1:8.9;     % in dB
 
 estimateConfig = LLREstimateConfig(false, @(input) (amplifaerSaleh(input)));
 
@@ -39,8 +39,21 @@ save("result.mat","perLLRNetDummy","perLLRDummy","perApproxLLRDummy","perLLRNetG
 
 figure ()
 hold on
-plot(EsNoValues, perLLRDummy)
-plot(EsNoValues, perLLRSalef)
+semilogy(EsNoValues, perLLRDummy(:,1))
+semilogy(EsNoValues, perLLRSalef(:,1))
+semilogy(EsNoValues, perApproxLLRDummy(:,1))
+semilogy(EsNoValues, perApproxLLRSalef(:,1))
+grid on
+legend('Exact LLR','Approx. LLR', 'Exact Saleh LLR','Approx. Saleh LLR')
+
+figure ()
+hold on
+semilogy(EsNoValues, perLLRDummy(:,1))
+semilogy(EsNoValues, perLLRGhorbani(:,1))
+semilogy(EsNoValues, perApproxLLRDummy(:,1))
+semilogy(EsNoValues, perApproxLLRGhorbani(:,1))
+grid on
+legend('Exact LLR','Approx. LLR', 'Exact Ghorbani LLR','Approx. Ghorbani LLR')
 
 function output = amplifaerGhorbani(input)
 
