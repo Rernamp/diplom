@@ -1,5 +1,5 @@
 close all;
-numFrames = 100;
+numFrames = 1;
 numErrors = 200;
 
 trainNow = false;
@@ -43,6 +43,8 @@ semilogy(EsNoValues, perLLRDummy(:,1))
 semilogy(EsNoValues, perLLRSalef(:,1))
 semilogy(EsNoValues, perApproxLLRDummy(:,1))
 semilogy(EsNoValues, perApproxLLRSalef(:,1))
+xlabel('E_s/N_o (dB)')
+ylabel('PER')
 grid on
 legend('Exact LLR','Approx. LLR', 'Exact Saleh LLR','Approx. Saleh LLR')
 
@@ -52,6 +54,8 @@ semilogy(EsNoValues, perLLRDummy(:,1))
 semilogy(EsNoValues, perLLRGhorbani(:,1))
 semilogy(EsNoValues, perApproxLLRDummy(:,1))
 semilogy(EsNoValues, perApproxLLRGhorbani(:,1))
+xlabel('E_s/N_o (dB)')
+ylabel('PER')
 grid on
 legend('Exact LLR','Approx. LLR', 'Exact Ghorbani LLR','Approx. Ghorbani LLR')
 
