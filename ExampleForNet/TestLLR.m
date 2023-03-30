@@ -1,5 +1,5 @@
 
-numFrames = 1000;
+numFrames = 1;
 numErrors = 200;
 
 trainNow = false;
@@ -17,17 +17,26 @@ EsNoValues = 8.6:0.1:8.9;     % in dB
 
 estimateConfig = LLREstimateConfig(false, @(input) (amplifaerSaleh(input)));
 
+
 % Simulate PER with exact LLR, approximate LLR, and LLRNet
-[perLLR,perApproxLLR,perLLRNet] = customLlrnetDVBS2PER(subsystemType,EsNoValues,llrNets,numFrames,numErrors, estimateConfig);
+[perLLRSalef,perApproxLLRSalef,perLLRNetSalef] = customLlrnetDVBS2PER(subsystemType,EsNoValues,llrNets,numFrames,numErrors, estimateConfig);
 type = subsystemType + " + Saleh";
-llrnetPlotLLRvsEsNo(perLLR,perApproxLLR,perLLRNet,EsNoValues,type)
+llrnetPlotLLRvsEsNo(perLLRSalef,perApproxLLRSalef,perLLRNetSalef, EsNoValues,type)
 
 estimateConfig = LLREstimateConfig(false, @(input) (amplifaerGhorbani(input)));
 
 % Simulate PER with exact LLR, approximate LLR, and LLRNet
-[perLLR,perApproxLLR,perLLRNet] = customLlrnetDVBS2PER(subsystemType,EsNoValues,llrNets,numFrames,numErrors, estimateConfig);
+[perLLRGhorbani,perApproxLLRGhorbani,perLLRNetGhorbani] = customLlrnetDVBS2PER(subsystemType,EsNoValues,llrNets,numFrames,numErrors, estimateConfig);
 type = subsystemType + " + Ghorbani";
-llrnetPlotLLRvsEsNo(perLLR,perApproxLLR,perLLRNet,EsNoValues,type)
+llrnetPlotLLRvsEsNo(perLLRGhorbani,perApproxLLRGhorbani,perLLRNetGhorbani,EsNoValues,type)
+
+estimateConfig = LLREstimateConfig(false, @(input) (amplifaerDummy(input)));
+
+[perLLRDummy,perApproxLLRDummy,perLLRNetDummy] = customLlrnetDVBS2PER(subsystemType,EsNoValues,llrNets,numFrames,numErrors, estimateConfig);
+type = subsystemType + " + Saleh";
+llrnetPlotLLRvsEsNo(perLLRDummy,perApproxLLRDummy,perLLRNetDummy,EsNoValues,type)
+
+save("result.mat","perLLRNetDummy","perLLRDummy","perApproxLLRDummy","perLLRNetGhorbani","perApproxLLRGhorbani","perLLRGhorbani","perLLRNetSalef","perApproxLLRSalef","perLLRSalef");
 
 
 function output = amplifaerGhorbani(input)
@@ -64,4 +73,8 @@ F = a_F*(abs(input).^2)./(1+b_F*(abs(input).^2));
 output = G .* exp(1i * 2 * pi .* F);
 output = input .* (output ./ abs(input));
 
+end
+
+function output = amplifaerDummy(input)
+    output = input;
 end
