@@ -1,5 +1,5 @@
 close all;
-numFrames = 1;
+numFrames = 1000;
 numErrors = 200;
 
 trainNow = false;
@@ -12,8 +12,8 @@ else
     load('llrnetDVBS2Networks','llrNets','subsystemType','EsNoValues');
 end
 
-subsystemType = '16APSK 2/3'; %#ok<UNRCH>
-EsNoValues = 8.5:0.1:8.9;     % in dB
+subsystemType = '8PSK 2/3'; %#ok<UNRCH>
+EsNoValues = 6.1:0.1:6.6;     % in dB
 
 estimateConfig = LLREstimateConfig(false, @(input) (amplifaerSaleh(input)));
 
@@ -38,26 +38,26 @@ llrnetPlotLLRvsEsNo(perLLRDummy,perApproxLLRDummy,perLLRNetDummy,EsNoValues,type
 save("result.mat","perLLRNetDummy","perLLRDummy","perApproxLLRDummy","perLLRNetGhorbani","perApproxLLRGhorbani","perLLRGhorbani","perLLRNetSalef","perApproxLLRSalef","perLLRSalef");
 
 figure ()
-hold on
 semilogy(EsNoValues, perLLRDummy(:,1))
+hold on
 semilogy(EsNoValues, perLLRSalef(:,1))
 semilogy(EsNoValues, perApproxLLRDummy(:,1))
 semilogy(EsNoValues, perApproxLLRSalef(:,1))
 xlabel('E_s/N_o (dB)')
 ylabel('PER')
 grid on
-legend('Exact LLR','Approx. LLR', 'Exact Saleh LLR','Approx. Saleh LLR')
+legend('Exact LLR', 'Exact Saleh LLR','Approx. LLR', 'Approx. Saleh LLR')
 
 figure ()
-hold on
 semilogy(EsNoValues, perLLRDummy(:,1))
+hold on
 semilogy(EsNoValues, perLLRGhorbani(:,1))
 semilogy(EsNoValues, perApproxLLRDummy(:,1))
 semilogy(EsNoValues, perApproxLLRGhorbani(:,1))
 xlabel('E_s/N_o (dB)')
 ylabel('PER')
 grid on
-legend('Exact LLR','Approx. LLR', 'Exact Ghorbani LLR','Approx. Ghorbani LLR')
+legend('Exact LLR', 'Exact Ghorbani LLR','Approx. LLR', 'Approx. Ghorbani LLR')
 
 function output = amplifaerGhorbani(input)
 
