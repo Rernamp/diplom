@@ -69,7 +69,7 @@ xComplex = mas_Tx_clx_symbols;
 
 % sig_in = abs(xComplex) .* exp(1i * 2 * pi * angle(xComplex));
 sig_in = xComplex;
-scatterplot(sig_in)
+
 
 rolloff = 0.5;
 FIR_h = fir_rcos(sps, 3, rolloff); % формирующий фильтр интерполятора
@@ -96,6 +96,7 @@ load('h_FIR_Rx.mat');
 
 mas_Rx_IQ = conv(sig_out, h_FIR_Rx, 'same');
 mas_Rx_clx_symbols = mas_Rx_IQ(1 : sps : end);
+%%mas_Rx_clx_symbols = 1.2.*mas_Rx_clx_symbols;
 
 scatterplot(mas_Rx_clx_symbols)
 scatterplot(xComplex)
