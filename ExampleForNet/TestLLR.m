@@ -88,6 +88,8 @@ b_A = 1.1517;
 a_F = 4.0033;
 b_F = 9.1041;
 
+input = input .* 1.2;
+
 G = a_A.*abs(input)./(1+b_A.*(abs(input).^2));
 F = a_F*(abs(input).^2)./(1+b_F*(abs(input).^2));
 output = G .* exp(1i * 2 * pi .* F);
