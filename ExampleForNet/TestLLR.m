@@ -1,5 +1,5 @@
 close all;
-numFrames = 1000;
+numFrames = 3000;
 numErrors = 200;
 
 trainNow = false;
@@ -13,7 +13,7 @@ else
 end
 
 subsystemType = '8PSK 2/3'; %#ok<UNRCH>
-EsNoValues = 6.1:0.1:6.6;     % in dB
+EsNoValues = 6:0.1:6.7;     % in dB
 
 estimateConfig = LLREstimateConfig(false, @(input) (amplifaerSaleh(input)));
 

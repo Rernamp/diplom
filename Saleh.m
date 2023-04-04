@@ -1,6 +1,5 @@
-close all;
-clear; 
-subsystemType = '32APSK 3/4';
+
+subsystemType = '16APSK 2/3';
 
 addpath("Dependencies");
 addpath("ExampleForNet")
@@ -68,7 +67,7 @@ xComplex = mas_Tx_clx_symbols;
 % 1i*(rand(numSymbols,1)*(maxImag-minImag)+minImag);
 
 % sig_in = abs(xComplex) .* exp(1i * 2 * pi * angle(xComplex));
-sig_in = xComplex;
+sig_in = 1.2.*xComplex;
 
 
 rolloff = 0.5;
