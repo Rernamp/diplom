@@ -204,12 +204,14 @@ end
       numPacketsLLR(esnoIdx,worker) = perEsNoLLR(3);
       numErrorsLLR(esnoIdx,worker) = perEsNoLLR(2);
       
+      if (estimateConfig.UseApporximate())
       % Deinterleave, decode, and check packet errors for approximate LLR
       packetErr = packetError(demodOutApproxLLR, bbFrameTx, dvb, decldpc, decbch);
       perEsNoApproxLLR = PERApproxLLR(falseVec,   packetErr');
       numPacketsApproxLLR(esnoIdx,worker) = perEsNoApproxLLR(3);
       numErrorsApproxLLR(esnoIdx,worker) = perEsNoApproxLLR(2);
-      
+      end
+
       if (estimateConfig.UseNet())
       % Deinterleave, decode, and check packet errors for LLRNet
       packetErr = packetError(demodOutLLRNet, bbFrameTx, dvb, decldpc, decbch);
@@ -222,8 +224,10 @@ end
     end
     fprintf('Worker #%d - Exact LLR -       Frame %d: EsNo: %1.2f, PER : %1.2e\n', ...
       worker, frameCnt, EsNo, perEsNoLLR(1))
+    if (estimateConfig.UseApporximate())
     fprintf('Worker #%d - Approximate LLR - Frame %d: EsNo: %1.2f, PER : %1.2e\n', ...
       worker, frameCnt, EsNo, perEsNoApproxLLR(1))
+    end
     if (estimateConfig.UseNet())
     fprintf('Worker #%d - LLRNet          - Frame %d: EsNo: %1.2f, PER : %1.2e\n', ...
       worker, frameCnt, EsNo, perEsNoLLRNet(1))
@@ -235,9 +239,13 @@ perLLR(:,1) = sum(numErrorsLLR, 2) ./ sum(numPacketsLLR, 2);
 perLLR(:,2) = sum(numErrorsLLR, 2);
 perLLR(:,3) = sum(numPacketsLLR, 2);
 
+perApproxLLR = 0;
+if (estimateConfig.UseApporximate())
+
 perApproxLLR(:,1) = sum(numErrorsApproxLLR, 2) ./ sum(numPacketsApproxLLR, 2);
 perApproxLLR(:,2) = sum(numErrorsApproxLLR, 2);
 perApproxLLR(:,3) = sum(numPacketsApproxLLR, 2);
+end
 perLLRNet = 0;
 if (estimateConfig.UseNet())
 perLLRNet(:,1) = sum(numErrorsLLRNet, 2) ./ sum(numPacketsLLRNet, 2);

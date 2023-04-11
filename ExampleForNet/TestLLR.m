@@ -1,5 +1,5 @@
 close all;
-numFrames = 3000;
+numFrames = 1;
 numErrors = 200;
 
 trainNow = false;
@@ -13,7 +13,7 @@ else
 end
 
 subsystemType = '16APSK 2/3'; %#ok<UNRCH>
-EsNoValues = 6:0.1:6.7;     % in dB
+EsNoValues = 6.7:0.1:6.8;     % in dB
 
 estimateConfig = LLREstimateConfig(false, @(input) (amplifaerSaleh(input)));
 
@@ -35,7 +35,7 @@ estimateConfig = LLREstimateConfig(false, @(input) (amplifaerDummy(input)));
 type = subsystemType;
 llrnetPlotLLRvsEsNo(perLLRDummy,perApproxLLRDummy,perLLRNetDummy,EsNoValues,type)
 
-save("result.mat","perLLRNetDummy","perLLRDummy","perApproxLLRDummy","perLLRNetGhorbani","perApproxLLRGhorbani","perLLRGhorbani","perLLRNetSalef","perApproxLLRSalef","perLLRSalef");
+save("result.mat","perLLRNetDummy","perLLRDummy","perApproxLLRDummy", "perLLRNetSalef","perApproxLLRSalef","perLLRSalef");
 
 figure ()
 semilogy(EsNoValues, perLLRDummy(:,1))

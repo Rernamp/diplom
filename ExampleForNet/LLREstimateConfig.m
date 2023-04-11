@@ -5,16 +5,22 @@ classdef LLREstimateConfig
     properties
         amplifaer
         useNet
+        useApproximate
     end
 
     methods
-        function obj = LLREstimateConfig(useNet, amplifaer)
+        function obj = LLREstimateConfig(useNetAndApproximate, amplifaer)
             obj.amplifaer = amplifaer;
-            obj.useNet = useNet;
+            obj.useNet = useNetAndApproximate;
+            obj.useApproximate = useNetAndApproximate;
         end
         
         function need = UseNet(obj)
             need = obj.useNet;
+        end
+
+        function need = UseApporximate(obj)
+            need = obj.useApproximate;
         end
         
         function outputSignal = amplifaerSignal(obj, input)
