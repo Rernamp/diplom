@@ -1,21 +1,20 @@
 close all;
+subsystemType = '32APSK 4/5'; %#ok<UNRCH>
+EsNoValues = 13.2:0.1:13.6;     % in dB
 numFrames = 1;
 numErrors = 200;
 
-trainNow = false;
+trainNow = true;
 if trainNow && (~strcmp(subsystemType,'16APSK 2/3') || ~isequal(EsNoValues,8.6:0.1:9))
     % Train the networks for each EsNo value
-    numTrainSymbols = 1e4;
-    hiddenLayerSize = 64;
+    numTrainSymbols = 1e2;
+    hiddenLayerSize = 8;
     llrNets = llrnetTrainDVBS2LLRNetwork(subsystemType, EsNoValues, numTrainSymbols, hiddenLayerSize);
 else
     load('llrnetDVBS2Networks','llrNets','subsystemType','EsNoValues');
 end
 
-subsystemType = '16APSK 2/3'; %#ok<UNRCH>
-EsNoValues = 6.7:0.1:6.8;     % in dB
-
-estimateConfig = LLREstimateConfig(false, @(input) (amplifaerSaleh(input)));
+estimateConfig = LLREstimateConfig(true, @(input) (amplifaerSaleh(input)));
 
 % Simulate PER with exact LLR, approximate LLR, and LLRNet
 [perLLRSalef,perApproxLLRSalef,perLLRNetSalef] = customLlrnetDVBS2PER(subsystemType,EsNoValues,llrNets,numFrames,numErrors, estimateConfig);
@@ -29,7 +28,7 @@ llrnetPlotLLRvsEsNo(perLLRSalef,perApproxLLRSalef,perLLRNetSalef, EsNoValues,typ
 %type = subsystemType + " + Ghorbani";
 %llrnetPlotLLRvsEsNo(perLLRGhorbani,perApproxLLRGhorbani,perLLRNetGhorbani,EsNoValues,type)
 
-estimateConfig = LLREstimateConfig(false, @(input) (amplifaerDummy(input)));
+estimateConfig = LLREstimateConfig(true, @(input) (amplifaerDummy(input)));
 
 [perLLRDummy,perApproxLLRDummy,perLLRNetDummy] = customLlrnetDVBS2PER(subsystemType,EsNoValues,llrNets,numFrames,numErrors, estimateConfig);
 type = subsystemType;
@@ -41,13 +40,21 @@ figure ()
 semilogy(EsNoValues, perLLRDummy(:,1))
 hold on
 semilogy(EsNoValues, perLLRSalef(:,1))
-semilogy(EsNoValues, perApproxLLRDummy(:,1))
-semilogy(EsNoValues, perApproxLLRSalef(:,1))
 xlabel('E_s/N_o (dB)')
 ylabel('PER')
 grid on
-legend('Exact LLR', 'Exact Saleh LLR','Approx. LLR', 'Approx. Saleh LLR')
+legend('Exact LLR', 'Exact Saleh LLR')
 
+figure ()
+semilogy(EsNoValues, perLLRDummy(:,1))
+hold on
+semilogy(EsNoValues, perLLRSalef(:,1))
+semilogy(EsNoValues, perLLRNet(:,1))
+semilogy(EsNoValues, perLLRNetSalef(:,1))
+xlabel('E_s/N_o (dB)')
+ylabel('PER')
+grid on
+legend('Exact LLR', 'Exact Saleh LLR')
 % figure ()
 % semilogy(EsNoValues, perLLRDummy(:,1))
 % hold on
@@ -88,7 +95,7 @@ b_A = 1.1517;
 a_F = 4.0033;
 b_F = 9.1041;
 
-input = input .* 1.2;
+input = input .* 2;
 
 G = a_A.*abs(input)./(1+b_A.*(abs(input).^2));
 F = a_F*(abs(input).^2)./(1+b_F*(abs(input).^2));
