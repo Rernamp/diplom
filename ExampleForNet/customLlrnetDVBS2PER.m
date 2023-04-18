@@ -239,18 +239,22 @@ perLLR(:,1) = sum(numErrorsLLR, 2) ./ sum(numPacketsLLR, 2);
 perLLR(:,2) = sum(numErrorsLLR, 2);
 perLLR(:,3) = sum(numPacketsLLR, 2);
 
-perApproxLLR = 0;
+
 if (estimateConfig.UseApporximate())
 
 perApproxLLR(:,1) = sum(numErrorsApproxLLR, 2) ./ sum(numPacketsApproxLLR, 2);
 perApproxLLR(:,2) = sum(numErrorsApproxLLR, 2);
 perApproxLLR(:,3) = sum(numPacketsApproxLLR, 2);
+else 
+perApproxLLR = 0;
 end
-perLLRNet = 0;
+
 if (estimateConfig.UseNet())
 perLLRNet(:,1) = sum(numErrorsLLRNet, 2) ./ sum(numPacketsLLRNet, 2);
 perLLRNet(:,2) = sum(numErrorsLLRNet, 2);
 perLLRNet(:,3) = sum(numPacketsLLRNet, 2);
+else 
+perLLRNet = 0;
 end
 end
 

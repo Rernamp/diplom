@@ -49,7 +49,7 @@ figure ()
 semilogy(EsNoValues, perLLRDummy(:,1))
 hold on
 semilogy(EsNoValues, perLLRSalef(:,1))
-semilogy(EsNoValues, perLLRNet(:,1))
+semilogy(EsNoValues, perLLRNetDummy(:,1))
 semilogy(EsNoValues, perLLRNetSalef(:,1))
 xlabel('E_s/N_o (dB)')
 ylabel('PER')
