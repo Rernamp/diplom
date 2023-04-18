@@ -54,7 +54,7 @@ semilogy(EsNoValues, perLLRNetSalef(:,1))
 xlabel('E_s/N_o (dB)')
 ylabel('PER')
 grid on
-legend('Exact LLR', 'Exact Saleh LLR')
+legend('Exact LLR', 'Exact Saleh LLR', 'LLR Net', 'LLR Net Saleh')
 % figure ()
 % semilogy(EsNoValues, perLLRDummy(:,1))
 % hold on
