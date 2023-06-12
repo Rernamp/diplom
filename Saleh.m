@@ -87,8 +87,9 @@ sig_out = sig_in .* (sig_out ./ abs(sig_in));
 
 
 peakFactor(xComplex)
-spec_dB(sig_in, 1, "Input") 
-spec_dB(sig_out, 1, "Output Saleh 32APSK")
+spec_dB(sig_in, 1, "", true) 
+spec_dB(sig_out, 1, "Спектр сигналов", false)
+legend("Входной спектр", "Выходной спектр");
 %%spec_dB(sig_out_Sale, 1, "From Saleh sci-hub")
 
 load('h_FIR_Rx.mat');
@@ -112,24 +113,23 @@ matr_Rx_message = de2bi(mas_Rx_int_symbols, bps);
 mas_Rx_message = matr_Rx_message(:);
 BER = count_ber(mas_Rx_message, mas_Tx_message) + 1e-10;
 
-
-
-
-
 function [peakFactor] = peakFactor( xComplex)
 %     peakFactor = db((max(signal.^2)) ./ (mean(signal.^2)));
     peakFactor = db(peak2rms(xComplex))
 end
 
-function [ spec ] = spec_dB( sig_out , fs, titleName)
+function [ spec ] = spec_dB( sig_out , fs, titleName, createFigure)
 
     x_fft = fft(sig_out);
     
     ahc_x = fftshift(mag2db(abs(x_fft)));
     
     f = (0:length(sig_out)-1)*fs/length(sig_out);
-    
+
+    if (createFigure)
     figure();
+    end
+    hold on
     plot(f, ahc_x);
     set(0,'DefaultAxesFontSize',14,'DefaultAxesFontName','Times New Roman');
     set(0,'DefaultTextFontSize',14,'DefaultTextFontName','Times New Roman'); 
